@@ -19,22 +19,24 @@ submitButton.addEventListener("click", (e) => {
 
   fetchData("api/post_images", { url: urlInput },
     (res) => {
-      sendToChannelWait(chatId, res.result, 0)
+      if (res.result.data) {
+        sendToChannelWait(chatId, res.result.token, res.result.data, 0)
+      }
     }, (err) => {
       console.log(err, 'error');
     })
 
 })
 
-function sendToChannelWait(chat_id, data, index) {
+function sendToChannelWait(chat_id, token, data, index) {
   if (data.length != index) {
-    sendToChannel(chat_id, data[index].src, () => {
+    sendToChannel(chat_id, token, data[index].src, () => {
       console.log("Success", index);
       document.getElementById("feed").style.display = "block";
       const item = `<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span><strong>Sucess!</strong> ` + (index + 1) + ` image send to telegram channel.<br>`
       feedDisplay.insertAdjacentHTML("beforeend", item)
       setTimeout(() => {
-        sendToChannelWait(chat_id, data, index + 1)
+        sendToChannelWait(chat_id, token, data, index + 1)
       }, 5000);
     })
   } else {
@@ -45,8 +47,9 @@ function sendToChannelWait(chat_id, data, index) {
   }
 }
 
-function sendToChannel(chat_id, imageUrl, onSuccess) {
-  const sendPhoto = "https://api.telegram.org/bot5631063008:AAHODcV3Lrt_gtZBTub_M-gbbbX7_n4ob8E/sendPhoto"
+function sendToChannel(chat_id, token, imageUrl, onSuccess) {
+  const botToken = token
+  const sendPhoto = `https://api.telegram.org/${botToken}/sendPhoto`
 
   const dt = {
     // chat_id: '@savetelegraph',

@@ -2,10 +2,11 @@ const axios = require('axios')
 const cheerio = require('cheerio')
 const cors = require('cors')
 const bodyParser = require("body-parser");
-
+const dotenv = require('dotenv');
 const express = require('express')
 const app = express()
 
+dotenv.config();
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -27,7 +28,7 @@ app.post('/api/post_images', (req, res) => {
       let src = pictures[i.toString()].children[0].attribs.src;
       pic.push({ src: src, title: title });
     }
-    res.status(200).json({ message: 'success', result: pic })
+    res.status(200).json({ message: 'success', result: { data: pic, token: process.env.BOT_TOKEN } })
   }).catch((e) => {
     res.status(400).json({ message: e, result: {} })
   })
