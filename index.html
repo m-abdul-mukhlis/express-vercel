@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telegraph Downloader</title>
+  <link rel="stylesheet" href="./src/styles.css">
+  <script defer src="./src/app.js"></script>
+  <style>
+    .alert {
+      padding: 20px;
+      background-color: #04AA6D;
+      color: white;
+    }
+
+    .closebtn {
+      margin-left: 15px;
+      color: white;
+      font-weight: bold;
+      float: right;
+      font-size: 22px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .closebtn:hover {
+      color: black;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="container">
+    <form id="input-form" action="" method="post">
+      <fieldset>
+        <textarea name="url" placeholder="Type your Telegraph url Here...." tabindex="5" required></textarea>
+      </fieldset>
+      <fieldset>
+        <button name="submit" type="submit" id="input-form-submit" data-submit="...Sending">Submit</button>
+      </fieldset>
+    </form>
+    <div id="feed" class="alert"></div>
+  </div>
+</body>
+
+</html>
