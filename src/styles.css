@@ -116,6 +116,10 @@ fieldset {
   border: 1px solid #999;
 }
 
+#feed {
+  display: none;
+}
+
 ::-webkit-input-placeholder {
   color: #888;
 }

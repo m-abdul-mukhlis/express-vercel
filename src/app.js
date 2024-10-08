@@ -6,38 +6,51 @@ const feedDisplay = document.querySelector('#feed')
 submitButton.addEventListener("click", (e) => {
   e.preventDefault();
   const urlInput = inputForm.url.value;
+  const chatId = inputForm.chat_id.value;
+
+  if (!chatId) {
+    showAlert("Please enter your chat ID.");
+    return;
+  }
+  if (!urlInput) {
+    showAlert("Please enter a valid URL.");
+    return;
+  }
 
   fetchData("api/post_images", { url: urlInput },
     (res) => {
-      sendToChannelWait(res.result, 0)
+      sendToChannelWait(chatId, res.result, 0)
     }, (err) => {
       console.log(err, 'error');
     })
 
 })
 
-function sendToChannelWait(data, index) {
+function sendToChannelWait(chat_id, data, index) {
   if (data.length != index) {
-    sendToChannel(data[index].src, () => {
+    sendToChannel(chat_id, data[index].src, () => {
       console.log("Success", index);
-      const item = `<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span><strong>Sucess!</strong> ` + index + ` image send to telegram channel.<br>`
+      document.getElementById("feed").style.display = "block";
+      const item = `<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span><strong>Sucess!</strong> ` + (index + 1) + ` image send to telegram channel.<br>`
       feedDisplay.insertAdjacentHTML("beforeend", item)
       setTimeout(() => {
-        sendToChannelWait(data, index + 1)
+        sendToChannelWait(chat_id, data, index + 1)
       }, 5000);
     })
   } else {
     console.log("All Data Send");
+    document.getElementById("feed").style.display = "block";
     const item = `<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span><strong>All Data Send!</strong> image send to telegram channel.<br>`
     feedDisplay.insertAdjacentHTML("beforeend", item)
   }
 }
 
-function sendToChannel(imageUrl, onSuccess) {
+function sendToChannel(chat_id, imageUrl, onSuccess) {
   const sendPhoto = "https://api.telegram.org/bot5631063008:AAHODcV3Lrt_gtZBTub_M-gbbbX7_n4ob8E/sendPhoto"
 
   const dt = {
-    chat_id: '@savetelegraph',
+    // chat_id: '@savetelegraph',
+    chat_id: chat_id,
     photo: imageUrl,
   }
 
@@ -79,4 +92,19 @@ function fetchData(url, post, onSuccess, onFailed) {
   }).catch((er) => {
     console.log(er, "error");
   })
+}
+
+function showAlert(message) {
+  const alertBox = document.createElement("div");
+  alertBox.className = "alert";
+  alertBox.innerHTML = `
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    <strong>${message}</strong>
+  `;
+
+  document.body.prepend(alertBox);
+
+  setTimeout(() => {
+    alertBox.style.display = 'none';
+  }, 5000);
 }
